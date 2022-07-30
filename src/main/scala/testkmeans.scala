@@ -4,8 +4,15 @@ object testkmeans {
     println("Hello world!")
     val kmeans = new Kmeans("src/main/resources/iris.data", "src/main/resources/irisAttributesNames.txt")
     kmeans.clustering(3)
-    println(kmeans.getClusters(0))
+   
 
+//    val data = new Data("src/main/resources/iris.data", "src/main/resources/irisAttributesNames.txt")
+//    val exemples = data.getNormalizedData
+//    var stable = false
+//    if(exemples(0).distance(exemples(1)) == 0){
+//      stable = true
+//    }
+//    println(stable)
 
   }
 }

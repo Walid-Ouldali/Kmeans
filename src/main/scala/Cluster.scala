@@ -28,11 +28,26 @@ class Cluster (nom : String, exemples : Array[Exemple], attributs : Int, categor
     def getCategories : Int = {
         return this.categories
     }
-    def getCentroid : Individu = {
+    def getCentre : Individu = {
         return this.centroid
     }
     //setters
+    //setcentre
     def setCentre(uncentroid: Individu) : Unit = {
       this.centroid = uncentroid
     }
-    //setcentre
+
+
+
+
+
+    def setNewCentroid: Unit = {
+      for (j <- 0 to 3) {
+        var somme = 0.0
+        for (i <- 0 until this.exemple.length) {
+          somme += this.exemple(i).get(j)
+        }
+
+        this.centroid.set(j, somme / this.exemple.length)
+      }
+    }
