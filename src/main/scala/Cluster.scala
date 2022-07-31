@@ -48,6 +48,15 @@ class Cluster (nom : String, exemples : Array[Exemple], attributs : Int, categor
           somme += this.exemple(i).get(j)
         }
 
-        this.centroid.set(j, somme / this.exemple.length)
+        this.centroid.set(j, somme.toFloat/this.exemple.length)
       }
+    }
+
+
+    def getDistanceIntra : Double = {
+        var somme = 0.0
+        for (i <- 0 until this.exemple.length){
+          somme += math.pow(this.exemple(i).distance(this.centroid),2)
+        }
+        return 1.toFloat/this.exemple.length*(somme)
     }

@@ -7,6 +7,7 @@ class Kmeans (fichierDonnees: String, fichierAttributs : String) :
   private val exemples =  donnees.getNormalizedData
   private var stable = false
 
+  // Initialisation des clusters
   def initialisation(k:Int) : Unit = {
     for (i <- 0 until k) {
       this.clusters += new Cluster("cluster", this.exemples, 4, k)
@@ -14,6 +15,7 @@ class Kmeans (fichierDonnees: String, fichierAttributs : String) :
     }
   }
 
+  //assignation
   def assignation(k: Int): Unit = {
     for (m <- 0 until this.exemples.length) {
       var idcluster = 0
@@ -30,6 +32,7 @@ class Kmeans (fichierDonnees: String, fichierAttributs : String) :
     }
   }
 
+  // calcule des points moyens
   def calculePointMoyens(k: Int): Unit = {
     for (i <- 0 until k) {
       this.clusters(i).setNewCentroid
@@ -37,30 +40,51 @@ class Kmeans (fichierDonnees: String, fichierAttributs : String) :
   }
 
 
-  def clustering(k : Int): Int =
+  def distanceInter(k: Int): Double = {
+    var somme = 0.0
+    for (i <- 0 until k - 1) {
+      for (j <- 1 until k) {
+        somme += this.clusters(i).getCentre.distance(this.clusters(j).getCentre)
+      }
+    }
+    val nbrDistances = 2.toFloat / ((k - 1) * k)
+    return nbrDistances * somme
+  }
+
+  def moyDistanceIntra(k: Int): Double = {
+    var somme = 0.0
+    for (i <- 0 until k) {
+      somme += this.clusters(i).getDistanceIntra
+    }
+    return somme.toFloat / k
+
+  }
+
+
+  def clustering(k : Int): Double =
     var centroid = new Array[Individu](k)
     initialisation(k)
+//    println("Initialisation")
+
+
     for (i <- 0 until k) {
       centroid(i)=Individu.generateRandomIndividu(4, Random)
     }
 
+    // Boucle de l'algorithme
     while (!this.stable) do
+      // Initialisation des clusters
       assignation(k)
-      println("Assignation")
-      println(this.clusters(0).getCentre)
-      println(this.clusters(1).getCentre)
-      println(this.clusters(2).getCentre)
+      // calcule des points moyens
       calculePointMoyens(k)
-      println("calculePointMoyens")
-      println(this.clusters(0).getCentre)
-      println(this.clusters(1).getCentre)
-      println(this.clusters(2).getCentre)
+//      println("calculePointMoyens")
+
 
       //verification
       var somme = 0.0
       for (i <- 0 until k){
        somme += centroid(i).distance(this.clusters(i).getCentre)
-        println(somme)
+//        println(somme)
       }
       if (somme == 0){
         this.stable = true
@@ -70,27 +94,16 @@ class Kmeans (fichierDonnees: String, fichierAttributs : String) :
         }
       }
 
+//    println("----fin du clustering")
+    val inter = distanceInter(k)
+    val moyintra = moyDistanceIntra(k)
+    val quality = inter.toFloat/moyintra
 
-    println("----fin du clustering")
-    println(this.clusters(0).getCentre)
-    println(this.clusters(1).getCentre)
-    println(this.clusters(2).getCentre)
-
-    // Initialisation des clusters
-
-
-    //--------------------------------------
-    //assignation
-
-    //------------------------------
-    // calcule des points moyens
-
-
-// Boucle de l'algorithme
+    stable = false
+    return quality
 
 
 
-    return 0
 
-  //getters
-  def getClusters = this.clusters
+
+
